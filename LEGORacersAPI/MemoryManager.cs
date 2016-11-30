@@ -6,72 +6,90 @@ using System.Runtime.InteropServices;
 
 namespace LEGORacersAPI
 {
-    public class MemoryManager
+    public static class MemoryManager
     {
         [DllImport("kernel32")]
         private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+		[DllImport("kernel32")]
+		private static extern bool CloseHandle(IntPtr hObject);
         [DllImport("kernel32")]
-        private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr address, byte[] buffer, uint size, out int bytesread);
+		private static extern bool ReadProcessMemory(IntPtr hProcess, UInt32 address, byte[] buffer, uint size, out int bytesread);
         [DllImport("kernel32")]
-        private static extern bool WriteProcessMemory(IntPtr hProcess, uint address, byte[] buffer, uint size, out int byteswritten);
+		private static extern bool WriteProcessMemory(IntPtr hProcess, UInt32 address, byte[] buffer, uint size, out int byteswritten);
         [DllImport("kernel32")]
-        private static extern uint VirtualAllocEx(IntPtr hProcess, uint dwAddress, uint nSize, uint dwAllocationType, uint dwProtect);
+		private static extern UInt32 VirtualAllocEx(IntPtr hProcess, UInt32 dwAddress, uint nSize, uint dwAllocationType, uint dwProtect);
+		[DllImport("kernel32")]
+		private static extern bool VirtualFreeEx(IntPtr hProcess, UInt32 dwAddress, uint nSize, uint dwFreeType);
         [DllImport("kernel32")]
-        private static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, out IntPtr dwThreadId);
+		private static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, UInt32 lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, out UInt32 dwThreadId);
         
-        public IntPtr OpenedProcess { get; private set; }
-        public uint NewMemory { get; set; }
+        public static IntPtr OpenedProcess { get; private set; }
+		public static UInt32 NewMemory { get; set; }
+		public static bool initialized;
 
-        public Process Process { get; private set; }
+		private const uint PROCESS_ALL_ACCESS = 0x1F0FFF, MEM_COMMIT = 0x1000, MEM_RELEASE = 0x8000, PAGE_EXECUTE_READWRITE = 0x40;
 
-        public MemoryManager(Process process)
+        public static Process Process { get; private set; }
+
+        public static void Initialize(Process process)
         {
-            this.Process = process;
-            OpenedProcess = OpenProcess(0x1F0FFF, false, process.Id);
+            Process = process;
+            OpenedProcess = OpenProcess(PROCESS_ALL_ACCESS, false, process.Id);
             NewMemory = AllocateMemory(1024);
+			initialized = true;
         }
 
-        private int GetNumberOfPlayers()
+		public static void Unload()
+		{
+			initialized = false;
+			VirtualFreeEx(OpenedProcess, NewMemory, 0, MEM_RELEASE);
+			NewMemory = 0;
+			CloseHandle(OpenedProcess);
+			OpenedProcess = IntPtr.Zero;
+			Process = null;
+		}
+
+		public static void CreateThread(UInt32 address)
         {
-            return ReadInt(ReadInt(0x004C4914) + 0x598);
+			UInt32 threadid;
+            CreateRemoteThread(OpenedProcess, IntPtr.Zero, 0, address, IntPtr.Zero, 0, out threadid);
         }
 
-        public void Execute(uint address)
+		private static UInt32 AllocateMemory(uint size)
         {
-            IntPtr threadid;
-            CreateRemoteThread(OpenedProcess, IntPtr.Zero, 0, (IntPtr)address, IntPtr.Zero, 0, out threadid);
+			return VirtualAllocEx(OpenedProcess, 0, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
         }
 
-        private uint AllocateMemory(uint size)
-        {
-            return VirtualAllocEx(OpenedProcess, 0, size, 0x1000, 0x40);
-        }
-
-        public int ReadInt(int address)
+		public static int ReadInt(UInt32 address)
         {
             return BitConverter.ToInt32(ReadBytes(address, 4), 0);
         }
 
-        public float ReadFloat(int address)
+		public static uint ReadUInt(UInt32 address)
+		{
+			return BitConverter.ToUInt32(ReadBytes(address, 4), 0);
+		}
+
+		public static float ReadFloat(UInt32 address)
         {
             return BitConverter.ToSingle(ReadBytes(address, 4), 0);
         }
 
-        public bool WriteInt(int address, int value)
+		public static bool WriteInt(UInt32 address, int value)
         {
             return WriteBytes(address, BitConverter.GetBytes(value));
         }
 
-        public bool WriteFloat(int address, float value)
+		public static bool WriteFloat(UInt32 address, float value)
         {
             return WriteBytes(address, BitConverter.GetBytes(value));
         }
-        public short ReadShort(int address)
+		public static short ReadShort(UInt32 address)
         {
             return BitConverter.ToInt16(ReadBytes(address, 4), 0);
         }
 
-        public byte[] GetStringBytes(string input)
+        public static byte[] GetStringBytes(string input)
         {
             List<byte> output = new List<byte>();
             foreach (char c in input)
@@ -83,41 +101,41 @@ namespace LEGORacersAPI
             return output.ToArray();
         }
 
-        public int CalculatePointer(int address, params int[] offsets)
+		public static UInt32 CalculatePointer(UInt32 address, params int[] offsets)
         {
-            address = ReadInt(address);
+			address = (UInt32)ReadInt(address);
             
             for (int i = 0; i < offsets.Length - 1; i++)
             {
-                address = ReadInt(address + offsets[i]);
+				address = (UInt32)ReadInt((UInt32)(address + offsets[i]));
             }
 
-            return address + offsets.LastOrDefault();
+			return (UInt32)(address + offsets.LastOrDefault());
         }
 
-        public byte ReadByte(int address)
+		public static byte ReadByte(UInt32 address)
         {
             return ReadBytes(address, 1)[0];
         }
 
-        public byte[] ReadBytes(int address, uint count)
+		public static byte[] ReadBytes(UInt32 address, uint count)
         {
             byte[] buffer = new byte[count];
             int bytesread;
 
-            ReadProcessMemory(OpenedProcess, (IntPtr)address, buffer, count, out bytesread);
+            ReadProcessMemory(OpenedProcess, address, buffer, count, out bytesread);
 
             return buffer;
         }
 
-        public bool WriteBytes(int address, byte[] bytesToWrite)
+		public static bool WriteBytes(UInt32 address, byte[] bytesToWrite)
         {
             int bytesWritten;
 
             return WriteProcessMemory(OpenedProcess, (uint)address, bytesToWrite, (uint)bytesToWrite.Length, out bytesWritten);
         }
 
-        public bool WriteByte(int address, byte byteToWrite)
+		public static bool WriteByte(UInt32 address, byte byteToWrite)
         {
             return WriteBytes(address, new byte[] { byteToWrite });
         }

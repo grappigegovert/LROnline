@@ -18,47 +18,32 @@ namespace LEGORacersAPI
         /// <summary>
         /// The base address to load RRB files.
         /// </summary>
-		protected int LOAD_RRB_BASE;
+		protected UInt32 LOAD_RRB_BASE;
 
         /// <summary>
         /// The Power-up function base address.
         /// </summary>
-        protected int POWERUP_FUNCTION_BASE;
+		protected UInt32 POWERUP_FUNCTION_BASE;
 
-        /// <summary>
-        /// The Red Power-up base address.
-        /// </summary>
-		protected int POWERUP_RED_ADDRESS;
-
-        /// <summary>
-        /// The Blue Power-up base address.
-        /// </summary>
-		protected int POWERUP_BLUE_ADDRESS;
-
-        /// <summary>
-        /// The Green Power-up base address.
-        /// </summary>
-		protected int POWERUP_GREEN_ADDRESS;
-
-        /// <summary>
-        /// The Yellow Power-up base address.
-        /// </summary>
-		protected int POWERUP_YELLOW_ADDRESS;
+		internal UInt32 POWERUP_RED_ADDRESS,
+			POWERUP_BLUE_ADDRESS,
+			POWERUP_GREEN_ADDRESS,
+			POWERUP_YELLOW_ADDRESS;
 
         /// <summary>
         /// The base address to continue running in the background.
         /// </summary>
-        protected int RUN_IN_BACKGROUND_ADDRESS;
+		protected UInt32 RUN_IN_BACKGROUND_ADDRESS;
 
         /// <summary>
         /// The base address of the number of AI racers.
         /// </summary>
-		protected int AI_COUNT_ADDRESS;
+		protected UInt32 AI_COUNT_ADDRESS;
 
-		protected int MAINMENU_BUTTONS_BASE;
-        protected int RACERSELECT_BUTTONS_BASE;
+		protected UInt32 MAINMENU_BUTTONS_BASE;
+        protected UInt32 RACERSELECT_BUTTONS_BASE;
 			
-		protected int MENU_BASE;
+		protected UInt32 MENU_BASEADDRESS;
 		protected int TARGETMENU_ECX_OFFSET;
 		protected int TARGETMENU_ESI_OFFSET;
 		protected int CURRENT_MENU_OFFSET;
@@ -68,55 +53,44 @@ namespace LEGORacersAPI
         protected int[] MENUSTRINGS_ECX_OFFSETS;
         protected int[] MENUSTRINGS_FILESTART_OFFSETS;
 
-        protected int INRACE_BASE;
+        protected UInt32 INRACE_BASEADDRESS;
 		protected int DRIVERCOUNT_OFFSET;
         protected int INRACE_ESI_OFFSET;
         protected int INRACE_PAUSED_OFFSET;
         protected int PAUSED_SELECTED_INDEX_OFFSET;
         protected int PAUSED_CURRENT_MENU_OFFSET;
-        protected int PAUSE_FUNCTION_ADDRESS;
-        protected int UNPAUSE_FUNCTION_ADDRESS;
+		protected UInt32 PAUSE_FUNCTION_ADDRESS;
+        protected UInt32 UNPAUSE_FUNCTION_ADDRESS;
 
-        protected int DRIVER_BASE;
-        protected int[] PLAYER_BASE_OFFSETS;
-        protected int[] ENEMY_1_BASE_OFFSETS;
-        protected int[] ENEMY_2_BASE_OFFSETS;
-        protected int[] ENEMY_3_BASE_OFFSETS;
-        protected int[] ENEMY_4_BASE_OFFSETS;
-		protected int[] ENEMY_5_BASE_OFFSETS;
+        internal UInt32 DRIVER_BASEADDRESS;
+        internal int[] DRIVER_BASE_OFFSETS;
 
-        protected int DRIVER_OFFSET_COORDINATE_X;
-        protected int DRIVER_OFFSET_COORDINATE_Y;
-        protected int DRIVER_OFFSET_COORDINATE_Z;
-        protected int DRIVER_OFFSET_SPEED_X;
-        protected int DRIVER_OFFSET_SPEED_Y;
-        protected int DRIVER_OFFSET_SPEED_Z;
-        protected int DRIVER_OFFSET_VECTOR_X1;
-        protected int DRIVER_OFFSET_VECTOR_Y1;
-        protected int DRIVER_OFFSET_VECTOR_Z1;
-        protected int DRIVER_OFFSET_VECTOR_X2;
-        protected int DRIVER_OFFSET_VECTOR_Y2;
-        protected int DRIVER_OFFSET_VECTOR_Z2;
-        protected int DRIVER_OFFSET_BRICK;
-        protected int DRIVER_OFFSET_WHITEBRICKS;
+        internal int DRIVER_OFFSET_COORDINATE_X,
+			DRIVER_OFFSET_COORDINATE_Y,
+			DRIVER_OFFSET_COORDINATE_Z,
+			DRIVER_OFFSET_SPEED_X,
+			DRIVER_OFFSET_SPEED_Y,
+			DRIVER_OFFSET_SPEED_Z,
+			DRIVER_OFFSET_ROT_FWD_X,
+			DRIVER_OFFSET_ROT_FWD_Y,
+			DRIVER_OFFSET_ROT_FWD_Z,
+			DRIVER_OFFSET_ROT_UP_X,
+			DRIVER_OFFSET_ROT_UP_Y,
+			DRIVER_OFFSET_ROT_UP_Z,
+			DRIVER_OFFSET_BRICK,
+			DRIVER_OFFSET_WHITEBRICKS;
 
         private bool initialized;
         private bool active;
         private bool loadRRB;
         private bool enableAIPowerUps;
-        private MemoryManager memoryManager;
         private Thread initializeThread;
         protected Process process;
 
         /// <summary>
-        /// Gets the local in-game player.
+        /// The list of drivers in the game.
         /// </summary>
-        public Player Player { get; private set; }
-
-        /// <summary>
-        /// Gets the local in-game opponents.
-        /// </summary>
-        public Opponent[] Opponents { get; private set; }
+        public Driver[] drivers { get; private set; }
 
         /// <summary>
         /// Gets the game clients formatted name.
@@ -176,7 +150,7 @@ namespace LEGORacersAPI
         {
             get
             {
-                return initialized ? memoryManager.ReadByte(RUN_IN_BACKGROUND_ADDRESS) == 0xEB : false;
+				return initialized ? MemoryManager.ReadByte(RUN_IN_BACKGROUND_ADDRESS) == 0xEB : false;
             }
             set
             {
@@ -184,11 +158,11 @@ namespace LEGORacersAPI
                 {
                     if (value)
                     {
-                        memoryManager.WriteByte(RUN_IN_BACKGROUND_ADDRESS, 0xEB);
+						MemoryManager.WriteByte(RUN_IN_BACKGROUND_ADDRESS, 0xEB);
                     }
                     else
                     {
-                        memoryManager.WriteByte(RUN_IN_BACKGROUND_ADDRESS, 0x75);
+						MemoryManager.WriteByte(RUN_IN_BACKGROUND_ADDRESS, 0x75);
                     }
                 }
             }
@@ -201,13 +175,13 @@ namespace LEGORacersAPI
         {
             get
             {
-                return initialized ? memoryManager.ReadInt(AI_COUNT_ADDRESS) : 0;
+				return initialized ? MemoryManager.ReadInt(AI_COUNT_ADDRESS) : 0;
             }
             set
             {
                 if (initialized && value >= 0 && value <= 5)
                 {
-                    memoryManager.WriteInt(AI_COUNT_ADDRESS, value);
+					MemoryManager.WriteInt(AI_COUNT_ADDRESS, value);
                 }
             }
         }
@@ -219,7 +193,7 @@ namespace LEGORacersAPI
         {
             get
             {
-                return initialized ? memoryManager.ReadInt(memoryManager.CalculatePointer(INRACE_BASE, DRIVERCOUNT_OFFSET)) == memoryManager.ReadInt(AI_COUNT_ADDRESS) : false;
+				return initialized ? MemoryManager.ReadInt(MemoryManager.CalculatePointer(INRACE_BASEADDRESS, DRIVERCOUNT_OFFSET)) == MemoryManager.ReadInt(AI_COUNT_ADDRESS) : false;
             }
         }
 
@@ -230,7 +204,7 @@ namespace LEGORacersAPI
         {
             get
             {
-                return initialized ? memoryManager.ReadInt(memoryManager.CalculatePointer(INRACE_BASE, INRACE_PAUSED_OFFSET)) == 1 : false;
+				return initialized ? MemoryManager.ReadInt(MemoryManager.CalculatePointer(INRACE_BASEADDRESS, INRACE_PAUSED_OFFSET)) == 1 : false;
             }
             set
             {
@@ -266,8 +240,6 @@ namespace LEGORacersAPI
         {
             initialized = false;
             InitializedType = InitializedType.None;
-            initializeThread = new Thread(Initialize);
-            initializeThread.Start();
         }
 
         /// <summary>
@@ -275,90 +247,40 @@ namespace LEGORacersAPI
         /// </summary>
         public void Unload()
         {
-            active = false;
-
-            if (Player != null)
-            {
-                Player.Unload();
-            }
-
-            if (Opponents != null)
-            {
-                foreach (Opponent opponent in Opponents)
-                {
-                    if (opponent != null)
-                    {
-                        opponent.Unload();
-                    }
-                }
-            }
+			this.active = false;
+			Thread.Sleep((int)Settings.RefreshRate);
+			MemoryManager.Unload();
         }
 
         /// <summary>
         /// Initializes the in-game objects so they can be managed using the API.
         /// </summary>
-        protected void Initialize()
-        {
-            try
-            {
-                active = true;
-                memoryManager = new MemoryManager(process);
+		protected void Initialize()
+		{
+			MemoryManager.Initialize(process);
+			this.drivers = new Driver[6];
+			for (int i = 0; i < 6; i++)
+			{
+				this.drivers[i] = new Driver(this, i);
+			}
+			active = true;
+			new Thread(eventLoop).Start();
+			initialized = true;
+			InitializedType = LEGORacersAPI.InitializedType.Both;
+		}
 
-                while (!initialized && active)
-                {
-                    if (GetCurrentMenu() != 0 && GetCurrentMenu() != Menu.Loading && GetCurrentMenu() != Menu.Initializing)
-                    {
-                        initialized = true;
+		private void eventLoop()
+		{
+			while (active)
+			{
+				for (int i = 0; i < drivers.Length; i++)
+				{
+					drivers[i].CheckPowerUp();
+				}
 
-                        // Core functionality is now initialized
-                        InitializedType = InitializedType.Core;
-
-                        Initialized(InitializedType.Core);
-
-                        while (active && !IsRaceRunning)
-                        {
-                            // Wait until a race has been started so the drivers can be initialized
-
-                            Thread.Sleep((int)Settings.RefreshRate);
-                        }
-                        if (!active) // When the client closes before a race has been started
-                            return; // Stop initializing
-                        do
-                        {
-                            // Reset the player to a null value to prevent a memory overflow
-                            Player = null;
-
-                            // There is a small time between the starting of a race and the actual start,
-                            // so the thread will continue to run for a small time until the local players X-coordinate
-                            // is actually filled with correct data, which is a good way to test if the race has actually been started.
-
-                            Player = new Player(memoryManager, DRIVER_BASE, PLAYER_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-
-                            Thread.Sleep((int)Settings.RefreshRate);
-                        }
-                        while (active && (Player == null || Player.X == 0));
-
-                        Opponents = new Opponent[5];
-
-                        Opponents[0] = new Opponent(memoryManager, DRIVER_BASE, ENEMY_1_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-                        Opponents[1] = new Opponent(memoryManager, DRIVER_BASE, ENEMY_2_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-                        Opponents[2] = new Opponent(memoryManager, DRIVER_BASE, ENEMY_3_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-                        Opponents[3] = new Opponent(memoryManager, DRIVER_BASE, ENEMY_4_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-                        Opponents[4] = new Opponent(memoryManager, DRIVER_BASE, ENEMY_5_BASE_OFFSETS, DRIVER_OFFSET_COORDINATE_X, DRIVER_OFFSET_COORDINATE_Y, DRIVER_OFFSET_COORDINATE_Z, DRIVER_OFFSET_SPEED_X, DRIVER_OFFSET_SPEED_Y, DRIVER_OFFSET_SPEED_Z, DRIVER_OFFSET_VECTOR_X1, DRIVER_OFFSET_VECTOR_Y1, DRIVER_OFFSET_VECTOR_Z1, DRIVER_OFFSET_VECTOR_X2, DRIVER_OFFSET_VECTOR_Y2, DRIVER_OFFSET_VECTOR_Z2, DRIVER_OFFSET_BRICK, DRIVER_OFFSET_WHITEBRICKS, POWERUP_RED_ADDRESS, POWERUP_BLUE_ADDRESS, POWERUP_GREEN_ADDRESS, POWERUP_YELLOW_ADDRESS);
-
-                        InitializedType = InitializedType.Both;
-
-                        Initialized(InitializedType.Drivers);
-                    }
-
-                    Thread.Sleep((int)Settings.RefreshRate);
-                }
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc);
-            }
-        }
+				Thread.Sleep((int)Settings.RefreshRate);
+			}
+		}
 
         /// <summary>
         /// Retrieves the current menu.
@@ -368,7 +290,7 @@ namespace LEGORacersAPI
         {
             Menu currentMenu = Menu.MainMenu;
 
-                currentMenu = (Menu)memoryManager.ReadByte(memoryManager.ReadInt(MENU_BASE) + CURRENT_MENU_OFFSET);
+			currentMenu = (Menu)MemoryManager.ReadByte(MemoryManager.CalculatePointer(MENU_BASEADDRESS, CURRENT_MENU_OFFSET));
 
             return currentMenu;
         }
@@ -385,8 +307,8 @@ namespace LEGORacersAPI
                 Console.WriteLine(currentMenu + " -> " + targetmenu);
 
                 int offset = 0;
-                int ECXbase = memoryManager.ReadInt(memoryManager.ReadInt(MENU_BASE) + TARGETMENU_ECX_OFFSET);
-                int ESIbase = memoryManager.ReadInt(memoryManager.ReadInt(MENU_BASE) + TARGETMENU_ESI_OFFSET);
+				int ECXbase = MemoryManager.ReadInt(MemoryManager.CalculatePointer(MENU_BASEADDRESS, TARGETMENU_ECX_OFFSET));
+				int ESIbase = MemoryManager.ReadInt(MemoryManager.CalculatePointer(MENU_BASEADDRESS, TARGETMENU_ESI_OFFSET));
 
                 if (ECXbase != ESIbase) // if a prompt is open
                 {
@@ -534,8 +456,8 @@ namespace LEGORacersAPI
                 codeToInject.AddRange(new byte[] { 0x8B, 0x11, 0x56, 0xFF, 0x52, 0x38, 0xC3 }); // mov edx,[ecx] | push esi | call dword ptr [edx+38] | ret
                 
                 // Write code to the assigned memory and execute it
-                memoryManager.WriteBytes((int)memoryManager.NewMemory, codeToInject.ToArray());
-                memoryManager.Execute(memoryManager.NewMemory);
+				MemoryManager.WriteBytes(MemoryManager.NewMemory, codeToInject.ToArray());
+				MemoryManager.CreateThread(MemoryManager.NewMemory);
             }
         }
 
@@ -548,8 +470,8 @@ namespace LEGORacersAPI
         {
             if (initialized)
             {
-                memoryManager.WriteInt(memoryManager.CalculatePointer(memoryManager.ReadInt(MENU_BASE), SELECTED_CIRCUIT_OFFSETS), memoryManager.ReadInt(memoryManager.CalculatePointer(memoryManager.ReadInt(MENU_BASE), CIRCUIT_BASE_OFFSETS)) + 100 * circuit);
-                memoryManager.WriteInt(memoryManager.CalculatePointer(memoryManager.ReadInt(MENU_BASE), SELECTED_RACE_OFFSETS), race);
+				MemoryManager.WriteInt(MemoryManager.CalculatePointer(MENU_BASEADDRESS, SELECTED_CIRCUIT_OFFSETS), MemoryManager.ReadInt(MemoryManager.CalculatePointer(MENU_BASEADDRESS, CIRCUIT_BASE_OFFSETS)) + 100 * circuit);
+				MemoryManager.WriteInt(MemoryManager.CalculatePointer(MENU_BASEADDRESS, SELECTED_RACE_OFFSETS), race);
             }
         }
 
@@ -628,15 +550,15 @@ namespace LEGORacersAPI
             {
                 if (value == true)
                 {
-                    result &= memoryManager.WriteBytes(LOAD_RRB_BASE, new byte[] { 0x75, 0x0C }); // JNE +332AD
-                    result &= memoryManager.WriteBytes(LOAD_RRB_BASE+4, new byte[] { 0x75, 0x08 }); // JNE +332AD
-                    result &= memoryManager.WriteByte(LOAD_RRB_BASE+0xC, 0x74); // JE
+					result &= MemoryManager.WriteBytes(LOAD_RRB_BASE, new byte[] { 0x75, 0x0C }); // JNE +332AD
+					result &= MemoryManager.WriteBytes(LOAD_RRB_BASE + 4, new byte[] { 0x75, 0x08 }); // JNE +332AD
+					result &= MemoryManager.WriteByte(LOAD_RRB_BASE + 0xC, 0x74); // JE
                 }
                 else
                 {
-                    result &= memoryManager.WriteBytes(LOAD_RRB_BASE, new byte[] { 0x90, 0x90 }); // NOP NOP
-                    result &= memoryManager.WriteBytes(LOAD_RRB_BASE + 4, new byte[] { 0x90, 0x90 }); // NOP NOP
-                    result &= memoryManager.WriteByte(LOAD_RRB_BASE + 0xC, 0xEB); // JMP
+					result &= MemoryManager.WriteBytes(LOAD_RRB_BASE, new byte[] { 0x90, 0x90 }); // NOP NOP
+					result &= MemoryManager.WriteBytes(LOAD_RRB_BASE + 4, new byte[] { 0x90, 0x90 }); // NOP NOP
+					result &= MemoryManager.WriteByte(LOAD_RRB_BASE + 0xC, 0xEB); // JMP
                 }
             }
 
@@ -654,27 +576,27 @@ namespace LEGORacersAPI
 
             if (value)
             {
-                result &= memoryManager.WriteBytes(POWERUP_FUNCTION_BASE, new byte[] { 0x8b, 0x86 });
-                result &= memoryManager.WriteBytes(POWERUP_FUNCTION_BASE + 2, BitConverter.GetBytes(DRIVER_OFFSET_BRICK)); // mov eax,[esi+00000CCC]
+				result &= MemoryManager.WriteBytes(POWERUP_FUNCTION_BASE, new byte[] { 0x8b, 0x86 });
+				result &= MemoryManager.WriteBytes(POWERUP_FUNCTION_BASE + 2, BitConverter.GetBytes(DRIVER_OFFSET_BRICK)); // mov eax,[esi+00000CCC]
             }
             else
             {
-                int targetMem = (int)memoryManager.NewMemory + 0x300;
+				UInt32 targetMem = MemoryManager.NewMemory + 0x300;
 
                 List<byte> bytestowrite = new List<byte>();
                 bytestowrite.Add(0xE9);
                 bytestowrite.AddRange(BitConverter.GetBytes((int)(targetMem - (POWERUP_FUNCTION_BASE + 5)))); // jmp targetmem
                 bytestowrite.Add(0x90); // nop
-                result &= memoryManager.WriteBytes(POWERUP_FUNCTION_BASE, bytestowrite.ToArray());
+				result &= MemoryManager.WriteBytes(POWERUP_FUNCTION_BASE, bytestowrite.ToArray());
 
                 bytestowrite.Clear();
                 bytestowrite.AddRange(new byte[] { 0x8b, 0x0d });
-                bytestowrite.AddRange(BitConverter.GetBytes(DRIVER_BASE));// mov ecx,[004C67BC]
+                bytestowrite.AddRange(BitConverter.GetBytes(DRIVER_BASEADDRESS)); // mov ecx,[004C67BC]
 
-                for (int i = 0; i < PLAYER_BASE_OFFSETS.Length - 1; i++)
+                for (int i = 0; i < DRIVER_BASE_OFFSETS.Length; i++)
                 {
                     bytestowrite.AddRange(new byte[] { 0x8b, 0x89 });
-                    bytestowrite.AddRange(BitConverter.GetBytes(PLAYER_BASE_OFFSETS[i]));
+					bytestowrite.AddRange(BitConverter.GetBytes(DRIVER_BASE_OFFSETS[i]));
                 }
 
                 bytestowrite.AddRange(new byte[] { 0x39, 0xf1 });                           // cmp ecx,esi
@@ -687,7 +609,7 @@ namespace LEGORacersAPI
                 bytestowrite.AddRange(BitConverter.GetBytes(DRIVER_OFFSET_BRICK));   // mov eax,[esi+poweruptype_offset]
                 bytestowrite.Add(0xe9);
                 bytestowrite.AddRange(BitConverter.GetBytes((POWERUP_FUNCTION_BASE + 6) - (int)(targetMem + bytestowrite.Count + 4)));// jmp 0043910A
-                result &= memoryManager.WriteBytes(targetMem, bytestowrite.ToArray());
+				result &= MemoryManager.WriteBytes(targetMem, bytestowrite.ToArray());
             }
 
             return result;
@@ -696,37 +618,37 @@ namespace LEGORacersAPI
         public bool RemoveMenuButtons()
         {
             bool result = true;
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB, 0x00); // build
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 1*0x14, 0x00); // circuit
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 2*0x14, 0x00); // singlerace
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 3*0x14, 0x55); // versus (moving to location 55 (circuit))
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 4*0x14, 0x00); // timeattack
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 5*0x14, 0x00); // options
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB, 0x00); // build
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 1 * 0x14, 0x00); // circuit
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 2 * 0x14, 0x00); // singlerace
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 3 * 0x14, 0x55); // versus (moving to location 55 (circuit))
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 4 * 0x14, 0x00); // timeattack
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0xB + 5 * 0x14, 0x00); // options
             //result &= writeByte(MAINMENU_BUTTONS_BASE + 0xB + 6*0x14, 0x00); // exit
 
-            result &= memoryManager.WriteByte(RACERSELECT_BUTTONS_BASE + 0x49, 0x00); // cancel racer selection
+			result &= MemoryManager.WriteByte(RACERSELECT_BUTTONS_BASE + 0x49, 0x00); // cancel racer selection
 
-            result &= memoryManager.WriteBytes(MAINMENU_BUTTONS_BASE + 0x98, new byte[] { 0x90, 0x90, 0x90, 0x90 });// always disable versus
+			result &= MemoryManager.WriteBytes(MAINMENU_BUTTONS_BASE + 0x98, new byte[] { 0x90, 0x90, 0x90, 0x90 });// always disable versus
 
-            result &= memoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0x3D, 46); // set versus button text to line 47 of menustrings.srf
-            result &= memoryManager.WriteBytes(GetMenuStringsAddress(46), memoryManager.GetStringBytes("WAITING FOR SERVER TO START A RACE..."));
+			result &= MemoryManager.WriteByte(MAINMENU_BUTTONS_BASE + 0x3D, 46); // set versus button text to line 47 of menustrings.srf
+			result &= MemoryManager.WriteBytes(GetMenuStringsAddress(46), MemoryManager.GetStringBytes("WAITING FOR SERVER TO START A RACE..."));
 
             return result;
         }
 
-        private int GetMenuStringsAddress(int line)
+        private UInt32 GetMenuStringsAddress(int line)
         {
             // code from 0x0044E500
-            int ecx = memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(0x004c4918) + 0x4dc8) + 0x354) + 0x4d00);
-            short offset = memoryManager.ReadShort(ecx + (int)line * 2);
-            int filestart = memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(0x004c4918) + 0x4dc8) + 0x354) + 0x4cfc);
-            return (int)(filestart + offset * 2);
+			uint ecx = MemoryManager.ReadUInt(MemoryManager.ReadUInt(MemoryManager.ReadUInt(MemoryManager.ReadUInt(0x004c4918) + 0x4dc8) + 0x354) + 0x4d00);
+			short offset = MemoryManager.ReadShort((UInt32)(ecx + line * 2));
+			int filestart = MemoryManager.ReadInt(MemoryManager.ReadUInt(MemoryManager.ReadUInt(MemoryManager.ReadUInt(0x004c4918) + 0x4dc8) + 0x354) + 0x4cfc);
+            return (UInt32)(filestart + offset * 2);
         }
 
         private void PauseGame()
         {
-            memoryManager.WriteInt(memoryManager.CalculatePointer(INRACE_BASE, INRACE_PAUSED_OFFSET), 1); // 1) pause game
-            int esi = memoryManager.ReadInt(INRACE_BASE) + INRACE_ESI_OFFSET;
+			MemoryManager.WriteInt(MemoryManager.CalculatePointer(INRACE_BASEADDRESS, INRACE_PAUSED_OFFSET), 1); // 1) pause game
+			int esi = MemoryManager.ReadInt(INRACE_BASEADDRESS) + INRACE_ESI_OFFSET;
             List<byte> codetoinject = new List<byte>();
             if (this.GetType() == typeof(Client_2001))
                 codetoinject.AddRange(new byte[] { 0x6A, 0x00 }); // push 00
@@ -734,26 +656,26 @@ namespace LEGORacersAPI
             codetoinject.AddRange(BitConverter.GetBytes(esi)); // mov esi,'esi'
             codetoinject.AddRange(new byte[] { 0x8B, 0xCE }); // mov ecx,esi
             codetoinject.Add(0xE8);
-            codetoinject.AddRange(BitConverter.GetBytes(PAUSE_FUNCTION_ADDRESS - (int)(memoryManager.NewMemory + codetoinject.Count + 4))); // call function
+			codetoinject.AddRange(BitConverter.GetBytes(PAUSE_FUNCTION_ADDRESS - (int)(MemoryManager.NewMemory + codetoinject.Count + 4))); // call function
             codetoinject.Add(0xC3); // ret
-            memoryManager.WriteBytes((int)memoryManager.NewMemory, codetoinject.ToArray());
-            memoryManager.Execute(memoryManager.NewMemory); // 2) stop music, open menu, etc.
+			MemoryManager.WriteBytes(MemoryManager.NewMemory, codetoinject.ToArray());
+			MemoryManager.CreateThread(MemoryManager.NewMemory); // 2) stop music, open menu, etc.
         }
 
         private void UnpauseGame()
         {
-            memoryManager.WriteInt(memoryManager.CalculatePointer(INRACE_BASE,PAUSED_SELECTED_INDEX_OFFSET), 0); // select index 0
-            memoryManager.WriteInt(memoryManager.CalculatePointer(INRACE_BASE,PAUSED_CURRENT_MENU_OFFSET), 0); // set current menu to 0
-            int esi = memoryManager.ReadInt(INRACE_BASE) + INRACE_ESI_OFFSET;
+			MemoryManager.WriteInt(MemoryManager.CalculatePointer(INRACE_BASEADDRESS, PAUSED_SELECTED_INDEX_OFFSET), 0); // select index 0
+			MemoryManager.WriteInt(MemoryManager.CalculatePointer(INRACE_BASEADDRESS, PAUSED_CURRENT_MENU_OFFSET), 0); // set current menu to 0
+			int esi = MemoryManager.ReadInt(INRACE_BASEADDRESS) + INRACE_ESI_OFFSET;
             List<byte> codetoinject = new List<byte>();
             codetoinject.Add(0xBE);
             codetoinject.AddRange(BitConverter.GetBytes(esi)); // mov esi,'esi'
             codetoinject.AddRange(new byte[] { 0x8B, 0xCE }); // mov ecx,esi
             codetoinject.Add(0xE8);
-            codetoinject.AddRange(BitConverter.GetBytes(UNPAUSE_FUNCTION_ADDRESS - (int)(memoryManager.NewMemory + codetoinject.Count + 4))); // call function
+			codetoinject.AddRange(BitConverter.GetBytes(UNPAUSE_FUNCTION_ADDRESS - (int)(MemoryManager.NewMemory + codetoinject.Count + 4))); // call function
             codetoinject.Add(0xC3); // ret
-            memoryManager.WriteBytes((int)memoryManager.NewMemory, codetoinject.ToArray());
-            memoryManager.Execute(memoryManager.NewMemory); // select menu item 0,0 (continue race)
+			MemoryManager.WriteBytes(MemoryManager.NewMemory, codetoinject.ToArray());
+			MemoryManager.CreateThread(MemoryManager.NewMemory); // select menu item 0,0 (continue race)
         }
     }
 }

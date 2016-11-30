@@ -24,9 +24,8 @@ namespace Client
         private ClientState clientState;
         private List<Participant> participants;
         private GameClient gameClient;
-        private Opponent[] opponents;
+        private Driver[] drivers;
         private Participant participant;
-        private Player gamePlayer;
         private int playerCount;
         private byte[] sendBytes;
         private byte[] receiveBytes;
@@ -39,7 +38,6 @@ namespace Client
         private NetworkStream stream;
         private Thread listenerThread;
         private Client client;
-        private MemoryManager memoryManager;
         private bool updateClient;
 
         public ClientForm(Process gameProcess, LauncherForm launcherForm)
@@ -134,11 +132,6 @@ namespace Client
                     dataGridPlayers.Columns[i].Visible = false;
                 }
 
-                mainModule = gameProcess.MainModule;
-
-                memoryManager = new MemoryManager(gameProcess);
-                //codeInjector = new CodeInjector(memoryManager);
-
                 SetStatus("Not Connected");
 
                 clientState = ClientState.Disconnected;
@@ -175,9 +168,9 @@ namespace Client
                     break;
                 case InitializedType.Drivers:
                     MessageBox.Show("Drivers initialized");
-                    Console.WriteLine("Player X: " + gameClient.Player.X);
-                    Console.WriteLine("Opponent 1 X: " + gameClient.Opponents[0].X);
-                    gameClient.Player.PowerUpUsed += Player_PowerUpUsed;
+                    Console.WriteLine("Player X: " + gameClient.drivers[0].X);
+                    Console.WriteLine("Opponent 1 X: " + gameClient.drivers[1].X);
+					gameClient.drivers[0].PowerUpUsed += Player_PowerUpUsed;
                     break;
             }
         }
@@ -476,18 +469,18 @@ namespace Client
                         //gameClient.UsePowerUp(enemy.PowerUpType, enemy.PowerUpWhiteBricks, i + 1);
                     }*/
 
-                    gameClient.Opponents[0].X = enemy.X;
-                    gameClient.Opponents[0].Y = enemy.Y;
-                    gameClient.Opponents[0].Z = enemy.Z;
-                    gameClient.Opponents[0].SpeedX = enemy.SpeedX;
-                    gameClient.Opponents[0].SpeedY = enemy.SpeedY;
-                    gameClient.Opponents[0].SpeedZ = enemy.SpeedZ;
-                    gameClient.Opponents[0].VectorX1 = enemy.VectorX1;
-                    gameClient.Opponents[0].VectorY1 = enemy.VectorY1;
-                    //opponents[0].VectorZ1 = enemy.VectorZ1;
-                    gameClient.Opponents[0].VectorX2 = enemy.VectorX2;
-                    gameClient.Opponents[0].VectorY2 = enemy.VectorY2;
-                    //opponents[0].VectorZ2 = enemy.VectorZ2;
+                    gameClient.drivers[1].X = enemy.X;
+					gameClient.drivers[1].Y = enemy.Y;
+					gameClient.drivers[1].Z = enemy.Z;
+					gameClient.drivers[1].SpeedX = enemy.SpeedX;
+					gameClient.drivers[1].SpeedY = enemy.SpeedY;
+					gameClient.drivers[1].SpeedZ = enemy.SpeedZ;
+					gameClient.drivers[1].Forward_X = enemy.VectorX1;
+					gameClient.drivers[1].Forward_Y = enemy.VectorY1;
+					gameClient.drivers[1].Forward_Z = enemy.VectorZ1;
+                    gameClient.drivers[1].Up_X = enemy.VectorX2;
+					gameClient.drivers[1].Up_Y = enemy.VectorY2;
+					gameClient.drivers[1].Up_Z = enemy.VectorZ2;
                     //if (GetActiveWindowTitle() == "LEGO Racers")
                     //{
                     //    g.DrawString("Knoest:\nX: " + enemy.X + "\nY: " + enemy.Y + "\nZ: " + enemy.Z, font, brush, new PointF(20, 20));
@@ -530,7 +523,7 @@ namespace Client
 
                         if (clientState == ClientState.Connected)
                         {
-                            string packetContent = participant.Nickname + "|" + gameClient.Player.X + "|" + gameClient.Player.Y + "|" + gameClient.Player.Z + "|" + gameClient.Player.SpeedX + "|" + gameClient.Player.SpeedY + "|" + gameClient.Player.SpeedZ + "|" + gameClient.Player.VectorX1 + "|" + gameClient.Player.VectorY1 + "|" + gameClient.Player.VectorZ1 + "|" + gameClient.Player.VectorX2 + "|" + gameClient.Player.VectorY2 + "|" + gameClient.Player.VectorZ2;
+							string packetContent = participant.Nickname + "|" + gameClient.drivers[0].X + "|" + gameClient.drivers[0].Y + "|" + gameClient.drivers[0].Z + "|" + gameClient.drivers[0].SpeedX + "|" + gameClient.drivers[0].SpeedY + "|" + gameClient.drivers[0].SpeedZ + "|" + gameClient.drivers[0].Forward_X + "|" + gameClient.drivers[0].Forward_Y + "|" + gameClient.drivers[0].Forward_Z + "|" + gameClient.drivers[0].Up_X + "|" + gameClient.drivers[0].Up_Y + "|" + gameClient.drivers[0].Up_Z;
 
                             /*if (!sentLastUsedPowerUp)
                             {

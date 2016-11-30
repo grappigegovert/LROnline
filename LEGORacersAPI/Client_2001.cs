@@ -29,7 +29,7 @@ namespace LEGORacersAPI
             MAINMENU_BUTTONS_BASE = 0x0045324D;
             RACERSELECT_BUTTONS_BASE = 0x00457397;
 
-            MENU_BASE = 0x004EF320;
+            MENU_BASEADDRESS = 0x004EF320;
             TARGETMENU_ECX_OFFSET = 0x47d4;
             TARGETMENU_ESI_OFFSET = 0x4944;
             CURRENT_MENU_OFFSET = 0x493c;
@@ -39,7 +39,7 @@ namespace LEGORacersAPI
             MENUSTRINGS_ECX_OFFSETS = new int[] { 0x4944, 0x354, 0x4868 };
             MENUSTRINGS_FILESTART_OFFSETS = new int[] { 0x4944, 0x354, 0x4864 };
 
-			INRACE_BASE = 0x004EF31c;
+			INRACE_BASEADDRESS = 0x004EF31c;
 			DRIVERCOUNT_OFFSET = 0x5a0;
 			INRACE_ESI_OFFSET = 0x98;
 			INRACE_PAUSED_OFFSET = 0x3164;
@@ -48,13 +48,8 @@ namespace LEGORacersAPI
 			PAUSE_FUNCTION_ADDRESS = 0x0041C7C0;
 			UNPAUSE_FUNCTION_ADDRESS = 0x0041C930;
 
-            DRIVER_BASE = 0x004EF320;
-            PLAYER_BASE_OFFSETS = new int[] { 0x46c, 0x14, 0x110, 0x298, 0x0 };
-            ENEMY_1_BASE_OFFSETS = new int[] { 0x46c, 0x18, 0x110, 0x298, 0x0 };
-            ENEMY_2_BASE_OFFSETS = new int[] { 0x46c, 0x1c, 0x110, 0x298, 0x0 };
-            ENEMY_3_BASE_OFFSETS = new int[] { 0x46c, 0x20, 0x110, 0x298, 0x0 };
-            ENEMY_4_BASE_OFFSETS = new int[] { 0x46c, 0x24, 0x110, 0x298, 0x0 };
-            ENEMY_5_BASE_OFFSETS = new int[] { 0x46c, 0x28, 0x110, 0x298, 0x0 };
+			DRIVER_BASEADDRESS = 0x004F11C0;
+            DRIVER_BASE_OFFSETS = new int[] { 0x8, 0x48, 0x7CC, 0x554 };
 
             DRIVER_OFFSET_COORDINATE_X = 0x528;
             DRIVER_OFFSET_COORDINATE_Y = 0x52c;
@@ -62,19 +57,16 @@ namespace LEGORacersAPI
             DRIVER_OFFSET_SPEED_X = 0x400;
             DRIVER_OFFSET_SPEED_Y = 0x404;
             DRIVER_OFFSET_SPEED_Z = 0x408;
-            DRIVER_OFFSET_VECTOR_X1 = 0x504;
-            DRIVER_OFFSET_VECTOR_Y1 = 0x508;
-            DRIVER_OFFSET_VECTOR_Z1 = 0x50c;
-            DRIVER_OFFSET_VECTOR_X2 = 0x51c;
-            DRIVER_OFFSET_VECTOR_Y2 = 0x520;
-            DRIVER_OFFSET_VECTOR_Z2 = 0x524;
+            DRIVER_OFFSET_ROT_FWD_X = 0x504;
+            DRIVER_OFFSET_ROT_FWD_Y = 0x508;
+            DRIVER_OFFSET_ROT_FWD_Z = 0x50c;
+            DRIVER_OFFSET_ROT_UP_X = 0x51c;
+            DRIVER_OFFSET_ROT_UP_Y = 0x520;
+            DRIVER_OFFSET_ROT_UP_Z = 0x524;
             DRIVER_OFFSET_BRICK = 0xCC8;
             DRIVER_OFFSET_WHITEBRICKS = 0x870;
 
-            if (Settings.AutoInitialize && initialize)
-            {
-                //Initialize();
-            }
+			this.Initialize();
         }
     }
 }

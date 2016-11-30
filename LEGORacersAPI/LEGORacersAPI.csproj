@@ -51,11 +51,11 @@
     <Compile Include="InitializedEventArgs.cs" />
     <Compile Include="InitializedType.cs" />
     <Compile Include="MemoryManager.cs" />
+    <Compile Include="MemoryValue.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="Opponent.cs" />
     <Compile Include="PickedUpBrickEventArgs.cs" />
-    <Compile Include="Player.cs" />
     <Compile Include="Brick.cs" />
+    <Compile Include="Pointer.cs" />
     <Compile Include="PowerUpUsedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefreshRate.cs" />

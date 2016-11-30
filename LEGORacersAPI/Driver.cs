@@ -9,214 +9,205 @@ namespace LEGORacersAPI
     /// </summary>
     public class Driver
     {
-        protected MemoryManager memoryManager;
-        protected int baseAddress;
-        protected int[] baseOffsets;
-        protected int memoryBase;
-        protected int xCoordinateOffset;
-        protected int yCoordinateOffset;
-        protected int zCoordinateOffset;
-        protected int xSpeedOffset;
-        protected int ySpeedOffset;
-        protected int zSpeedOffset;
-        protected int vectorX1Offset;
-        protected int vectorY1Offset;
-        protected int vectorZ1Offset;
-        protected int vectorX2Offset;
-        protected int vectorY2Offset;
-        protected int vectorZ2Offset;
-        protected int powerUpTypeOffset;
-        protected int powerUpwhiteBricksOffset;
-        protected int powerUpRed;
-        protected int powerUpBlue;
-        protected int powerUpGreen;
-        protected int powerUpYellow;
+		GameClient gameClient;
+		int driverIndex;
+		Brick lastKnownBrick = Brick.None;
+		int lastKnownWhiteBricks = 0;
 
-        private bool active;
-        private Brick lastKnownBrick;
-        private int lastKnownWhiteBricks;
-        private int driverNumber;
-        private static int currentDriverNumber;
+		public Driver(GameClient gameClient, int driverIndex)
+		{
+			this.gameClient = gameClient;
+			this.driverIndex = driverIndex;
+		}
+
+		private UInt32 baseAddress
+		{
+			get
+			{
+				return MemoryManager.ReadUInt(
+					(UInt32)(MemoryManager.CalculatePointer(gameClient.DRIVER_BASEADDRESS, gameClient.DRIVER_BASE_OFFSETS)+ driverIndex * 4));
+			}
+		}
 
         /// <summary>
-        /// Gets or sets the drivers X-coordinate.
+        /// The driver's X-coordinate.
         /// </summary>
         public float X
         {
             get
             {
-                return memoryManager.ReadFloat(memoryBase + xCoordinateOffset);
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_X));
             }
             set
             {
-                memoryManager.WriteFloat(memoryBase + xCoordinateOffset, value);
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_X), value);
             }
         }
 
         /// <summary>
-        /// Gets or sets the drivers Y-coordinate.
+        /// The driver's Y-coordinate.
         /// </summary>
         public float Y
         {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + yCoordinateOffset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + yCoordinateOffset, value);
-            }
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_Y));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_Y), value);
+			}
         }
 
         /// <summary>
-        /// Gets or sets the drivers Z-coordinate.
+        /// The driver's Z-coordinate.
         /// </summary>
         public float Z
         {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + zCoordinateOffset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + zCoordinateOffset, value);
-            }
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_Z));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_COORDINATE_Z), value);
+			}
         }
 
         /// <summary>
-        /// Gets or sets the drivers X-speed.
+        /// The driver's X-speed.
         /// </summary>
         public float SpeedX
         {
             get
             {
-                return memoryManager.ReadFloat(memoryBase + xSpeedOffset);
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_X));
             }
             set
             {
-                memoryManager.WriteFloat(memoryBase + xSpeedOffset, value);
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_X), value);
             }
         }
 
         /// <summary>
-        /// Gets or sets the drivers Y-speed.
+        /// The driver's Y-speed.
         /// </summary>
         public float SpeedY
         {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + ySpeedOffset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + ySpeedOffset, value);
-            }
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_Y));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_Y), value);
+			}
         }
 
         /// <summary>
-        /// Gets or sets the drivers Z-speed.
+        /// The driver's Z-speed.
         /// </summary>
         public float SpeedZ
         {
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_Z));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_SPEED_Z), value);
+			}
+        }
+
+        /// <summary>
+        /// The X-value of the driver's 'up' vector
+        /// </summary>
+        public float Up_X
+        {
             get
             {
-                return memoryManager.ReadFloat(memoryBase + zSpeedOffset);
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_X));
             }
             set
             {
-                memoryManager.WriteFloat(memoryBase + zSpeedOffset, value);
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_X), value);
             }
         }
 
         /// <summary>
-        /// Gets or sets the drivers X1-vector.
+		/// The Y-value of the driver's 'up' vector
         /// </summary>
-        public float VectorX1
+        public float Up_Y
         {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorX1Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorX1Offset, value);
-            }
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_Y));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_Y), value);
+			}
         }
 
         /// <summary>
-        /// Gets or sets the drivers Y1-vector.
+		/// The Z-value of the driver's 'up' vector
         /// </summary>
-        public float VectorY1
+        public float Up_Z
         {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorY1Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorY1Offset, value);
-            }
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_Z));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_UP_Z), value);
+			}
         }
 
-        /// <summary>
-        /// Gets or sets the drivers Z1-vector.
-        /// </summary>
-        public float VectorZ1
-        {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorZ1Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorZ1Offset, value);
-            }
-        }
+		/// <summary>
+		/// The X-value of the driver's 'forward' vector
+		/// </summary>
+		public float Forward_X
+		{
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_X));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_X), value);
+			}
+		}
 
-        /// <summary>
-        /// Gets or sets the drivers X2-vector.
-        /// </summary>
-        public float VectorX2
-        {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorX2Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorX2Offset, value);
-            }
-        }
+		/// <summary>
+		/// The Y-value of the driver's 'forward' vector
+		/// </summary>
+		public float Forward_Y
+		{
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_Y));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_Y), value);
+			}
+		}
 
-        /// <summary>
-        /// Gets or sets the drivers Y2-vector.
-        /// </summary>
-        public float VectorY2
-        {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorY2Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorY2Offset, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the drivers Z2-vector.
-        /// </summary>
-        public float VectorZ2
-        {
-            get
-            {
-                return memoryManager.ReadFloat(memoryBase + vectorZ2Offset);
-            }
-            set
-            {
-                memoryManager.WriteFloat(memoryBase + vectorZ2Offset, value);
-            }
-        }
+		/// <summary>
+		/// The Z-value of the driver's 'forward' vector
+		/// </summary>
+		public float Forward_Z
+		{
+			get
+			{
+				return MemoryManager.ReadFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_Z));
+			}
+			set
+			{
+				MemoryManager.WriteFloat((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_ROT_FWD_Z), value);
+			}
+		}
 
         /// <summary>
         /// Gets or sets the drivers Brick type.
@@ -225,11 +216,12 @@ namespace LEGORacersAPI
         {
             get
             {
-                return (Brick)memoryManager.ReadInt(memoryBase + powerUpTypeOffset);
+				return (Brick)MemoryManager.ReadInt((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_BRICK));
             }
             set
             {
-                memoryManager.WriteInt(memoryBase + powerUpTypeOffset, (int)value);
+				if (value != Brick.White)
+					MemoryManager.WriteInt((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_BRICK), (int)value);
             }
         }
 
@@ -240,26 +232,12 @@ namespace LEGORacersAPI
         {
             get
             {
-                return memoryManager.ReadInt(memoryBase + powerUpwhiteBricksOffset);
+				return MemoryManager.ReadInt((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_WHITEBRICKS));
             }
             set
             {
-                memoryManager.WriteInt(memoryBase + powerUpwhiteBricksOffset, value >= 0 && value <= 3 ? value : 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the MemoryManager.
-        /// </summary>
-        public MemoryManager MemoryManager
-        {
-            get
-            {
-                return memoryManager;
-            }
-            private set
-            {
-                memoryManager = value;
+				if (value >= 0 && value <= 3)
+					MemoryManager.WriteInt((UInt32)(baseAddress + gameClient.DRIVER_OFFSET_WHITEBRICKS), value);
             }
         }
 
@@ -289,55 +267,28 @@ namespace LEGORacersAPI
             }
         }
 
-        /// <summary>
-        /// Safely unloads the driver.
-        /// </summary>
-        public void Unload()
-        {
-            active = false;
-        }
+		public void CheckPowerUp()
+		{
+			if (lastKnownBrick != Brick)
+			{
+				if (Brick == Brick.None)
+				{
+					OnPowerUpUsed(this, new PowerUpUsedEventArgs(lastKnownBrick, lastKnownWhiteBricks));
+				}
+				else
+				{
+					OnPickedUpBrick(this, new PickedUpBrickEventArgs(Brick));
+				}
+			}
 
-        /// <summary>
-        /// Initializes the driver.
-        /// </summary>
-        protected void Initialize()
-        {
-            active = true;
+			if (WhiteBricks > lastKnownWhiteBricks)
+			{
+				OnPickedUpBrick(this, new PickedUpBrickEventArgs(Brick.White));
+			}
 
-            driverNumber = currentDriverNumber;
-            currentDriverNumber++;
-
-            Thread powerUpThread = new Thread(CheckPowerUp);
-            powerUpThread.Start();
-        }
-
-        private void CheckPowerUp()
-        {
-            while (active)
-            {
-                if (lastKnownBrick != Brick)
-                {
-                    if (Brick == Brick.None)
-                    {
-                        OnPowerUpUsed(this, new PowerUpUsedEventArgs(lastKnownBrick, lastKnownWhiteBricks));
-                    }
-                    else
-                    {
-                        OnPickedUpBrick(this, new PickedUpBrickEventArgs(Brick));
-                    }
-                }
-
-                if (WhiteBricks > lastKnownWhiteBricks)
-                {
-                    OnPickedUpBrick(this, new PickedUpBrickEventArgs(Brick.White));
-                }
-
-                lastKnownBrick = Brick;
-                lastKnownWhiteBricks = WhiteBricks;
-
-                Thread.Sleep((int)Settings.RefreshRate);
-            }
-        }
+			lastKnownBrick = Brick;
+			lastKnownWhiteBricks = WhiteBricks;
+		}
 
         /// <summary>
         /// Uses a Power-up from the driver. This does not trigger the PowerUpUsed event.
@@ -346,48 +297,37 @@ namespace LEGORacersAPI
         /// <param name="whiteBricks">Amount of White bricks to use.</param>
         public void UsePowerUp(Brick brick, int whiteBricks)
         {
-            if (driverNumber >= 0 && driverNumber <= 5 && brick != Brick.White && brick != Brick.None)
+            if (driverIndex >= 0 && driverIndex <= 5 && brick != Brick.White && brick != Brick.None)
             {
-                int function = 0;
+                UInt32 function = 0;
 
                 switch (brick)
                 {
                     case Brick.Red:
                         // Red Power-up
-                        function = powerUpRed;
+                        function = gameClient.POWERUP_RED_ADDRESS;
                         break;
                     case Brick.Blue:
                         // Blue Power-up
-                        function = powerUpBlue;
+                        function = gameClient.POWERUP_RED_ADDRESS;
                         break;
                     case Brick.Green:
                         // Green Power-up
-                        function = powerUpGreen;
+                        function = gameClient.POWERUP_GREEN_ADDRESS;
                         break;
                     case Brick.Yellow:
                         // Yellow Power-up
-                        function = powerUpYellow;
+                        function = gameClient.POWERUP_YELLOW_ADDRESS;
                         break;
                     default:
                         return;
                 }
 
-                int raceraddress;
+				uint ecx = MemoryManager.ReadUInt(baseAddress + 0x8);
+                uint ebx = 0;
+                uint edx = 0;
 
-                if (driverNumber == 0)
-                {
-                    raceraddress = memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(0x004C67BC) + 0x60) + 0xA8) + 0x114) + 0x40) - 0x121C;
-                }
-                else
-                {
-                    raceraddress = memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(0x004C67BC) + 0x60) + 0xA8) + 0x110 + (int)driverNumber * 4) + 0x40) - 0x3e8;
-                }
-
-                int ecx = memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(memoryManager.ReadInt(0x004C67BC) + 0x60) + 0xA8) + 0x114) + 0x40) - 0x121C + 0x8);
-                int ebx = 0;
-                int edx = 0;
-
-                switch (driverNumber)
+                switch (driverIndex)
                 {
                     case 0: // Local player
                         ebx = ecx - 0x498;
@@ -423,67 +363,14 @@ namespace LEGORacersAPI
                 codeToInject.Add(0x6A);
                 codeToInject.Add((byte)whiteBricks); // push whitebricks
                 codeToInject.Add(0x68);
-                codeToInject.AddRange(BitConverter.GetBytes(raceraddress)); // push raceraddress
+                codeToInject.AddRange(BitConverter.GetBytes(baseAddress)); // push raceraddress
                 codeToInject.Add(0xE8);
-                codeToInject.AddRange(BitConverter.GetBytes((int)(-(memoryManager.NewMemory + codeToInject.Count + 4) + function))); // call function
+                codeToInject.AddRange(BitConverter.GetBytes((int)(-(MemoryManager.NewMemory + codeToInject.Count + 4) + function))); // call function
                 codeToInject.Add(0xC3); // ret
 
                 // Write code to the assigned memory and execute it
-                memoryManager.WriteBytes((int)memoryManager.NewMemory, codeToInject.ToArray());
-                memoryManager.Execute(memoryManager.NewMemory);
-
-                /*int raceraddress;
-
-                int ecx = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_1_BASE_OFFSETS) + 0x8);
-                int ebx = 0;
-                int edx = 0;
-
-                switch (driverNumber)
-                {
-                    case 0: // Player
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, PLAYER_BASE_OFFSETS));
-                        ebx = ecx - 0x498;
-                        edx = ecx - 0x444;
-                        break;
-                    case 1: // AI 1
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_1_BASE_OFFSETS));
-                        edx = 0xD1;
-                        break;
-                    case 2: // AI 2
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_2_BASE_OFFSETS));
-                        edx = 0xA4;
-                        break;
-                    case 3: // AI 3
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_3_BASE_OFFSETS));
-                        edx = 0xBA;
-                        break;
-                    case 4: // AI 4
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_4_BASE_OFFSETS));
-                        edx = 0x49;
-                        break;
-                    case 5: // AI 5
-                        raceraddress = memoryManager.ReadInt(memoryManager.CalculatePointer(DRIVER_BASE, ENEMY_5_BASE_OFFSETS));
-                        edx = 0x8D;
-                        break;
-                }
-
-                List<byte> codeToInject = new List<byte>();
-
-                codeToInject.Add(0xBB);
-                codeToInject.AddRange(BitConverter.GetBytes(ebx)); // mov ebx,neededEBX
-                codeToInject.Add(0xB9);
-                codeToInject.AddRange(BitConverter.GetBytes(ecx)); // mov ecx,neededECX
-                codeToInject.Add(0xBA);
-                codeToInject.AddRange(BitConverter.GetBytes(edx)); // mov edx,neededEDX
-                codeToInject.Add(0x6A);
-                codeToInject.Add((byte)whiteBricks); // push whitebricks
-                codeToInject.Add(0x68);
-                codeToInject.AddRange(BitConverter.GetBytes(raceraddress)); // push raceraddress
-                codeToInject.Add(0xE8);
-                codeToInject.AddRange(BitConverter.GetBytes(function - (int)(MemoryManager.NewMemory + codeToInject.Count + 4))); // call function
-                codeToInject.Add(0xC3); // ret
-                memoryManager.WriteBytes((int)memoryManager.NewMemory, codeToInject.ToArray());
-                memoryManager.Execute(MemoryManager.NewMemory);*/
+				MemoryManager.WriteBytes(MemoryManager.NewMemory, codeToInject.ToArray());
+				MemoryManager.CreateThread(MemoryManager.NewMemory);
             }
         }
     }
