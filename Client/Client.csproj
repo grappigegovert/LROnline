@@ -76,6 +76,11 @@
     <Compile Include="PacketReceivedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,12 +113,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Resources\Resource1.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -138,24 +150,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\connect.png" />
+    <EmbeddedResource Include="Resources\connect.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\delete.png" />
+    <EmbeddedResource Include="Resources\delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\lego.png" />
+    <EmbeddedResource Include="Resources\lego.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo_client.ico" />
-    <None Include="Resources\disconnect.png" />
-    <None Include="Resources\Button_Settings.png" />
-    <None Include="Resources\wrench.png" />
-    <None Include="Resources\Close_Hover.png" />
-    <None Include="Resources\Close.png" />
-    <None Include="Resources\Launcher.png" />
-    <None Include="Resources\Button_Launch_Hover.png" />
-    <None Include="Resources\Button_Launch.png" />
+    <EmbeddedResource Include="Resources\disconnect.png" />
+    <EmbeddedResource Include="Resources\Button_Settings.png" />
+    <EmbeddedResource Include="Resources\wrench.png" />
+    <EmbeddedResource Include="Resources\Close_Hover.png" />
+    <EmbeddedResource Include="Resources\Close.png" />
+    <EmbeddedResource Include="Resources\Launcher.png" />
+    <EmbeddedResource Include="Resources\Button_Launch_Hover.png" />
+    <EmbeddedResource Include="Resources\Button_Launch.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

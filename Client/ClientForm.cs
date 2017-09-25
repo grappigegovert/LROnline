@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -107,7 +105,10 @@ namespace Client
                     powerUpsUsed[i] = 0;
                 }
 
-                gameClient = GameClientFactory.GetGameClient(gameProcess);
+	            if (Properties.Settings.Default.ForceVersion != "Auto")
+		            gameClient = GameClientFactory.GetGameClient(gameProcess, Properties.Settings.Default.ForceVersion);
+				else
+					gameClient = GameClientFactory.GetGameClient(gameProcess);
 
                 gameClient.Initialized += gameClient_Initialized;
 

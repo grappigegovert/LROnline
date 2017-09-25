@@ -1,106 +1,125 @@
 ﻿using LEGORacersAPI;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Client
 {
-    public partial class WizardForm : Form
-    {
-        private string gameClientDirectory;
+	public partial class WizardForm : Form
+	{
+		private string gameClientDirectory;
+		private bool switching = false;
+		private string md5;
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardForm));
 
-        public WizardForm()
-        {
-            InitializeComponent();
-        }
+		public WizardForm()
+		{
+			InitializeComponent();
+		}
 
-        /// <summary>
-        /// Tries to identify the game client version.
-        /// </summary>
-        /// <param name="process"></param>
-        private void Identify(Process process)
-        {
-            GameClient gameClient = GameClientFactory.GetGameClient(process, false);
+		/// <summary>
+		/// Tries to identify the game client version.
+		/// </summary>
+		/// <param name="process"></param>
+		private void Identify(Process process)
+		{
+			GameClient gameClient = GameClientFactory.GetGameClient(process, false);
 
-            if (gameClient != null)
-            {
-                lblStatus.Text = "You were successfully identified as:" + Environment.NewLine + gameClient.FormattedName;
+			if (gameClient != null)
+			{
+				lblStatus.Text = "You were successfully identified as:" + Environment.NewLine + gameClient.FormattedName;
+				label1.Text = resources.GetString("lblIntroContent.Text");
+				radioButton1.Visible = radioButton2.Visible = false;
+			}
+			else
+			{
+				md5 = LEGORacersAPI.Toolbox.GetMD5Hash(process.MainModule.FileName);
+				lblStatus.Text = "Your game could not be identified.";
+				label1.Text = Resources.Resource1.checkfail;
+				radioButton1.Visible = radioButton2.Visible = true;
+			}
+			gameClientDirectory = Path.GetDirectoryName(process.MainModule.FileName);
+			btnNext.Enabled = true;
+		}
 
-                btnNext.Enabled = true;
+		private void btnConfirm_Click(object sender, EventArgs e)
+		{
+			switching = true;
+			tabControl1.SelectedIndex = 1;
+			timer.Enabled = true;
+		}
 
-                gameClientDirectory = Path.GetDirectoryName(process.MainModule.FileName);
-            }
-            else
-            {
-                string md5hash = LEGORacersAPI.Toolbox.GetMD5Hash(process.MainModule.FileName);
+		private void timer_Tick(object sender, EventArgs e)
+		{
+			Process[] processess = Process.GetProcessesByName("LEGORacers");
 
-                Clipboard.SetText(md5hash);
-                MessageBox.Show("We had some trouble to identify you. Your game client files MD5 hash was copied to your clipboard.", "Couldn't find your client");
-                lblStatus.Text = "You were not identified.";
-            }
-        }
+			if (processess.Any())
+			{
+				timer.Enabled = false;
 
-        private void btnConfirm_Click(object sender, EventArgs e)
-        {
-            btnConfirm.Visible = false;
-            pnlIntro.Visible = false;
-            pnlIdentify.Visible = true;
-            timer.Enabled = true;
-        }
+				Process gameClient = processess[0];
 
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            Process[] processess = Process.GetProcessesByName("LEGORacers");
+				Identify(gameClient);
 
-            if (processess.Count() > 0)
-            {
-                timer.Enabled = false;
+				gameClient.Kill();
+			}
+		}
 
-                Process gameClient = processess[0];
-                ProcessModule mainModule = gameClient.MainModule;
+		private void btnNext_Click(object sender, EventArgs e)
+		{
+			switching = true;
+			tabControl1.SelectedIndex = 2;
+		}
 
-                Identify(gameClient);
+		private void btnFinish_Click(object sender, EventArgs e)
+		{
+			Properties.Settings.Default.ForceVersion = "Auto";
+			if (radioButton1.Visible)
+			{
+				Properties.Settings.Default.ForceVersion = "Invalid";
+				if (radioButton1.Checked)
+					Properties.Settings.Default.ForceVersion = "2001";
+				else if (radioButton2.Checked)
+					Properties.Settings.Default.ForceVersion = "1999-nodrm";
+				else
+					Close();
+			}
+			Properties.Settings.Default.GameClientDirectory = gameClientDirectory;
+			Properties.Settings.Default.Save();
 
-                gameClient.Kill();
-            }
-        }
+			LauncherForm launcher = new LauncherForm();
+			launcher.FormClosed += (s, args) => Close();
+			launcher.Show();
 
-        private void btnNext_Click(object sender, EventArgs e)
-        {
-            btnNext.Visible = false;
-            btnFinish.Visible = true;
-            btnFinish.Enabled = true;
-            pnlFinished.Visible = true;
-            pnlIdentify.Visible = false;
-        }
+			Hide();
+		}
 
-        private void btnFinish_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.GameClientDirectory = gameClientDirectory;
-            Properties.Settings.Default.Save();
+		private void WizardForm_Load(object sender, EventArgs e)
+		{
+			if (!Toolbox.IsAdministrator())
+			{
+				MessageBox.Show("Please restart the application with Administrator rights.", "Error");
 
-            (new LauncherForm()).Show();
+				Close();
+			}
+		}
 
-            Hide();
-        }
+		private void tabControl1_Selecting(object sender, TabControlCancelEventArgs e)
+		{
+#if DEBUG
+			switching = true;
+#endif
+			if (!switching)
+				e.Cancel = true;
+			else
+				switching = false;
+		}
 
-        private void WizardForm_Load(object sender, EventArgs e)
-        {
-            if (!Toolbox.IsAdministrator())
-            {
-                MessageBox.Show("Please restart the application with Administrator rights.", "Error");
-
-                Close();
-            }
-        }
-    }
+		private void button1_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(md5);
+		}
+	}
 }
