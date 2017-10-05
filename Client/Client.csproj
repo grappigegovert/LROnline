@@ -156,11 +156,9 @@
     <EmbeddedResource Include="Resources\delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\lego.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="logo_client.ico" />
     <EmbeddedResource Include="Resources\disconnect.png" />
+    <EmbeddedResource Include="Resources\logo.png" />
     <EmbeddedResource Include="Resources\Button_Settings.png" />
     <EmbeddedResource Include="Resources\wrench.png" />
     <EmbeddedResource Include="Resources\Close_Hover.png" />

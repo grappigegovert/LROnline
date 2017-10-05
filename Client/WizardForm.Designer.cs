@@ -64,7 +64,7 @@
 			// 
 			// picLogo
 			// 
-			this.picLogo.Image = global::Client.Properties.Resources.lego;
+			this.picLogo.Image = global::Client.Properties.Resources.logo;
 			this.picLogo.Location = new System.Drawing.Point(13, 35);
 			this.picLogo.Margin = new System.Windows.Forms.Padding(4);
 			this.picLogo.Name = "picLogo";
