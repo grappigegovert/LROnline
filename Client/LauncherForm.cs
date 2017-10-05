@@ -100,6 +100,7 @@ namespace Client
 
 					ClientForm c = new ClientForm(p, this);
 					c.FormClosed += (s, args) => Close();
+					c.Show();
 					Hide();
 				}
 				catch (Exception exc)
