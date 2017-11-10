@@ -122,7 +122,6 @@ namespace Server
                         foreach (ServerParticipant participant in participants)
                         {
                             NetworkStream stream = participant.Client.GetStream();
-
                             if (stream.DataAvailable)
                             {
                                 int i;
@@ -145,7 +144,7 @@ namespace Server
                                                 Content = "FULL"
                                             });
                                         }
-                                        else if (participants.Where(p => p.Nickname == packet.Content).Count() > 0)
+                                        else if (participants.Any(p => p.Nickname == packet.Content))
                                         {
                                             participant.RemoveFromServer = true;
 
@@ -201,6 +200,15 @@ namespace Server
                         }
 
                         participants.RemoveAll(p => p.RemoveFromServer);
+
+                        if (participants.Count > 0)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                            Thread.Sleep(50);
+                        }
                     }
                 }
             }
