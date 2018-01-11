@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EFD4414B-6539-45EA-A5E3-DEAC0E9B3B20}</ProjectGuid>
+    <ProjectGuid>{EF17FBAF-A26F-4593-820E-1EA587F4675C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Client</RootNamespace>
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,10 +34,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>logo_client.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,55 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="ClientState.cs" />
-    <Compile Include="ConnectForm.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConnectForm.Designer.cs">
-      <DependentUpon>ConnectForm.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClientForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ClientForm.Designer.cs">
-      <DependentUpon>ClientForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LauncherForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LauncherForm.Designer.cs">
-      <DependentUpon>LauncherForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PacketReceivedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\Resource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Toolbox.cs" />
-    <Compile Include="WizardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WizardForm.Designer.cs">
-      <DependentUpon>WizardForm.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="ConnectForm.resx">
-      <DependentUpon>ConnectForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ClientForm.resx">
-      <DependentUpon>ClientForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LauncherForm.resx">
-      <DependentUpon>LauncherForm.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -113,19 +69,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Resources\Resource1.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WizardForm.resx">
-      <DependentUpon>WizardForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -140,32 +83,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LEGORacersAPI\LEGORacersAPI.csproj">
-      <Project>{3dab65c0-0702-421a-97c8-9db2b6a1cdf8}</Project>
-      <Name>LEGORacersAPI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Library\Library.csproj">
-      <Project>{f50a0b29-a52e-45dc-ac8d-6695ca0662c3}</Project>
-      <Name>Library</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\connect.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="logo_client.ico" />
-    <EmbeddedResource Include="Resources\disconnect.png" />
-    <EmbeddedResource Include="Resources\logo.png" />
-    <EmbeddedResource Include="Resources\Button_Settings.png" />
-    <EmbeddedResource Include="Resources\wrench.png" />
-    <EmbeddedResource Include="Resources\Close_Hover.png" />
-    <EmbeddedResource Include="Resources\Close.png" />
-    <EmbeddedResource Include="Resources\Launcher.png" />
-    <EmbeddedResource Include="Resources\Button_Launch_Hover.png" />
-    <EmbeddedResource Include="Resources\Button_Launch.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
