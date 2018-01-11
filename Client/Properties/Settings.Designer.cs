@@ -97,18 +97,6 @@ namespace Client.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool SkipIntroVideo {
-            get {
-                return ((bool)(this["SkipIntroVideo"]));
-            }
-            set {
-                this["SkipIntroVideo"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Auto")]
         public string ForceVersion {
             get {
@@ -128,6 +116,30 @@ namespace Client.Properties {
             }
             set {
                 this["NeedsUpdating"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Arguments {
+            get {
+                return ((string)(this["Arguments"]));
+            }
+            set {
+                this["Arguments"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SkipIntroVideo {
+            get {
+                return ((bool)(this["SkipIntroVideo"]));
+            }
+            set {
+                this["SkipIntroVideo"] = value;
             }
         }
     }

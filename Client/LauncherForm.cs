@@ -94,6 +94,8 @@ namespace Client
 					processInfo.Arguments += " -novideo";
 				}
 
+				processInfo.Arguments += " " + Properties.Settings.Default.Arguments;
+
 				try
 				{
 					Process p = Process.Start(processInfo);

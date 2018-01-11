@@ -798,7 +798,7 @@ namespace Client
             //Console.WriteLine("Hand X: {0}", codeInjector.ReadFloat(handPointer));
             //float playerBase = codeInjector.ReadFloat(codeInjector.ReadUInt(codeInjector.ReadUInt(codeInjector.ReadUInt(codeInjector.ReadUInt(codeInjector.ReadUInt(0x004C67BC) + 0x60) + 0xA8) + 0x114) + 0x40) + 0x130);
             //Console.WriteLine(playerBase);
-            //memoryManager.WriteByte(0x00417602, 0xEB);
+            gameClient.RunInBackground = true;
             //codeInjector.setupRace(1, 2);
             //codeInjector.GotoMenu(CodeInjector.Menu.ControlsP1);
             //uint x = codeInjector.Pointer(codeInjector.ReadUInt(0x004C67BC), new uint[] { 0x60, 0xa8, 0x114, 0x40, 0x130 });
