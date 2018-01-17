@@ -68,7 +68,7 @@
 			// startbutton
 			// 
 			this.startbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.startbutton.Location = new System.Drawing.Point(555, 6);
+			this.startbutton.Location = new System.Drawing.Point(558, 6);
 			this.startbutton.Name = "startbutton";
 			this.startbutton.Size = new System.Drawing.Size(76, 49);
 			this.startbutton.TabIndex = 1;
@@ -79,7 +79,7 @@
 			// numericUpDown1
 			// 
 			this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.numericUpDown1.Location = new System.Drawing.Point(388, 7);
+			this.numericUpDown1.Location = new System.Drawing.Point(391, 7);
 			this.numericUpDown1.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -103,7 +103,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(349, 9);
+			this.label2.Location = new System.Drawing.Point(352, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(33, 17);
 			this.label2.TabIndex = 3;
@@ -137,7 +137,7 @@
             listViewItem6});
 			this.playerListView.Location = new System.Drawing.Point(12, 61);
 			this.playerListView.Name = "playerListView";
-			this.playerListView.Size = new System.Drawing.Size(619, 150);
+			this.playerListView.Size = new System.Drawing.Size(622, 150);
 			this.playerListView.TabIndex = 6;
 			this.playerListView.UseCompatibleStateImageBehavior = false;
 			this.playerListView.View = System.Windows.Forms.View.Details;
@@ -163,12 +163,15 @@
 			// 
 			// textBox1
 			// 
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.Location = new System.Drawing.Point(12, 234);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
 			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textBox1.Size = new System.Drawing.Size(619, 121);
+			this.textBox1.Size = new System.Drawing.Size(622, 131);
 			this.textBox1.TabIndex = 7;
 			// 
 			// label4
@@ -182,7 +185,8 @@
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(459, 6);
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button2.Location = new System.Drawing.Point(462, 6);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(90, 23);
 			this.button2.TabIndex = 10;
@@ -199,11 +203,11 @@
 			this.statuslabel.TabIndex = 11;
 			this.statuslabel.Text = "not running";
 			// 
-			// Form1
+			// ServerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(643, 367);
+			this.ClientSize = new System.Drawing.Size(646, 377);
 			this.Controls.Add(this.statuslabel);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.label4);
@@ -215,7 +219,8 @@
 			this.Controls.Add(this.startbutton);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Form1";
+			this.MinimumSize = new System.Drawing.Size(553, 334);
+			this.Name = "ServerForm";
 			this.Text = "LROnline Server";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

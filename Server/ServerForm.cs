@@ -5,16 +5,23 @@ namespace Server
 {
 	public partial class ServerForm : Form
 	{
-		private Server server;
+		private readonly Server server;
+		private static ServerForm instance;
 
 		public ServerForm()
 		{
+			instance = this;
 			InitializeComponent();
 			this.server = new Server(this);
 			numericUpDown1.Value = Server.DefaultPort;
 		}
 
-		public void Log(string text, bool newline = true)
+		public static void Log(string text, bool newline = true)
+		{
+			instance.log(text, newline);
+		}
+
+		private void log(string text, bool newline = true)
 		{
 			text = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + text;
 			InvokeIfRequired(textBox1, () => textBox1.AppendText(text + (newline ? Environment.NewLine : "")));
@@ -22,7 +29,7 @@ namespace Server
 
 		private void startbutton_Click(object sender, EventArgs e)
 		{
-			if (!server.running)
+			if (!server.Running)
 			{
 				startbutton.Enabled = false;
 				server.StartServer((int)numericUpDown1.Value);
@@ -40,7 +47,7 @@ namespace Server
 			}
 		}
 
-		public static void InvokeIfRequired(Control control, MethodInvoker action)
+		private static void InvokeIfRequired(Control control, MethodInvoker action)
 		{
 			if (control.InvokeRequired)
 			{
@@ -59,7 +66,7 @@ namespace Server
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (server.running)
+			if (server.Running)
 			{
 				startbutton.Enabled = false;
 				server.StopServer();

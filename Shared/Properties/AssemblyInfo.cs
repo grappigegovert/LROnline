@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LROnline Client")]
+[assembly: AssemblyTitle("Shared")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LROnline Client")]
-[assembly: AssemblyCopyright("Copyright © grappigegovert 2018")]
+[assembly: AssemblyProduct("Shared")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e247e8b9-8679-42fb-be7f-24ca1dbc48f1")]
+[assembly: Guid("3ff65c5f-5831-461c-b0b6-b0170431e443")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.47")]
+[assembly: AssemblyVersion("1.0.0.17")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
